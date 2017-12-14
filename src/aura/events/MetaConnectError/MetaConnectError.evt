@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="MetaConnectError">
+    <aura:attribute name="payload" type="Object" description="xxx"/>
+    <aura:attribute name="channel" type="String" description="xxx"/>
+</aura:event>

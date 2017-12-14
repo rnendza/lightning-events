@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="CaseSubjectEvent">
+    <aura:attribute name="payload" type="Object" description="xxx"/>
+</aura:event>

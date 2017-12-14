@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="CasesLeftOpenEvent">
+    <aura:attribute name="payload" type="Object" description="I guess this could be a list of cases even though should normally only be 1?"/>
+</aura:event>

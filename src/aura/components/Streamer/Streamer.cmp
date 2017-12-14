@@ -1,0 +1,57 @@
+<aura:component controller="ctrlAuraStreamer" access="global">
+
+    <aura:attribute name="channel"          type="String" required="true"
+                    description="The name of the pushtopic to subscribe to. ie /topic/Tasks"/>
+
+    <aura:attribute name="useReplayExt"     type="Boolean" default="true"
+                    description="Whether we should register the replay ext or not."/>
+
+    <aura:attribute name="replayFromValue"  type="Integer" default="-1"
+                    description="See SFDC help on durable streaming but be care with -2
+                                 all they give you a choice of basically is new messages. or if
+                                 you somehow know the replay id (yeah right) that actual id...
+                                 or everything in the past 24 hours repeatedly. so bucho
+                                 events might be generated if you use -2"/>
+
+    <aura:attribute name="cometd"           type="Object" description="used by the controller to store state."/>
+    <aura:attribute name="subscription"     type="Object" description="used by the controller to store state."/>
+    <aura:attribute name="vfEventName"      type="String" description="name of the event the controller should fire.. use from vfPage."/>
+    <aura:attribute name="vfMetaConnectErrorEventName"      type="String" description="name of the event the controller should fire.. use from vfPage."/>
+    <aura:attribute name="debugMode" type="String" default="info" description="valid values are debug or info or warn. Generally this is used to send the logLevel to cometd"  />
+
+    <aura:handler name="destroy" value="{!this}" action="{!c.handleDestroy}"
+                    description="unsubscribe and disconnect from cometd"/>
+
+    <aura:registerEvent name="onLightningMessage"       type="c:streamingEvent"
+                        description="Event type the controller should fire. use from lightning only"/>
+
+
+    <!-- the below are all required to fire all the possible vf events. idk why.. seems lame! -->
+    <aura:registerEvent name="AocEvent"                 type="c:AocEvent"/>
+    <aura:registerEvent name="AppliedResourceEvent"     type="c:AppliedResourceEvent"/>
+    <aura:registerEvent name="NewEvent"                 type="c:NewsEvent"/>
+    <aura:registerEvent name="TaskEvent"                type="c:TaskEvent"/>
+    <aura:registerEvent name="ServicesEvent"            type="c:ServicesEvent"/>
+    <aura:registerEvent name="CasesLeftOpenEvent"       type="c:CasesLeftOpenEvent"/>
+    <aura:registerEvent name="CaseStateEvent"           type="c:CaseStateEvent"/>
+    <aura:registerEvent name="CaseSubjectEvent"         type="c:CaseSubjectEvent"/>
+
+    <aura:registerEvent name="MetaConnectError"         type="c:MetaConnectError" description="Note: this will probably be deprecated in preference of recovery inside the streamer component."/>
+
+    <aura:registerEvent name="CaseStatusChangedPlatformEvent"       type="c:CaseStatusChangedPlatformEvent"/>
+    <aura:registerEvent name="UserOwnedEventCreatedPlatformEvent"   type="c:UserOwnedEventCreatedPlatformEvent"/>
+
+    <ltng:require scripts="{!join(',',
+            $Resource.cometd_lightning+ '/cometd.js',
+            $Resource.cometd_lightning + '/CarplsReplayExtension.js')}"
+            afterScriptsLoaded="{!c.doInit}" />
+    <!--
+    v3.1.1  with durable streaming ie. replay extension is rewritten by me as SFDC keeps screwing this up!
+    Note cometdReplayExtension is javascript written by Salesforce it's not from the cometdGroup and it's dated back to 2016..
+    I rewrote it to be lockerservice friendly (CarplsReplayExtension.js)
+    It's still of limited use though they need more replayFrom options. I can't really enhance beyond making it work
+    in lightning / locker service as the replayextension is server code written by SFDC.
+    -->
+    debug...channel passed in = {!v.channel}<br/>
+    debug...vfEventName passed in = {!v.vfEventName}
+</aura:component>

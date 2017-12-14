@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="ServicesEvent">
+    <aura:attribute name="payload" type="Object" description="Normally the sobject as a property with other info supplied by the PushTopic subscribe"/>
+</aura:event>

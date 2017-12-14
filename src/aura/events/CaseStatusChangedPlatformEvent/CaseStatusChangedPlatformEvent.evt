@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="CaseStatusChangedPlatformEvent">
+    <aura:attribute name="payload" type="Object" description="data.payload in json"/>
+</aura:event>
